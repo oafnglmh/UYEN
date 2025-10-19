@@ -2,37 +2,52 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Chúc Uyên 20-10 Vui Vẻ ❤️</title>
+<title>💌 Chúc Uyển 20-10 Vui Vẻ 💖</title>
 <style>
 html, body {
   height: 100%;
   margin: 0;
-  background: black;
+  background: radial-gradient(circle at center, #1a001f, #000);
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
 }
 
-/* ====== Hiệu ứng mở màn ====== */
+/* ====== Rèm mở đầu ====== */
 .curtain {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  inset: 0;
   display: flex;
   z-index: 9999;
-  overflow: hidden;
 }
-
 .panel {
   flex: 1;
-  background: linear-gradient(to right, #ff4081, #ff1744);
+  background: linear-gradient(to right, #ff5f9e, #ff1744);
   transition: transform 2s ease-in-out;
 }
-
 .panel.left { transform: translateX(0); }
 .panel.right { transform: translateX(0); }
-
 .curtain.open .left { transform: translateX(-100%); }
 .curtain.open .right { transform: translateX(100%); }
+
+/* ====== Nút mở ====== */
+.click-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px #ff9ecf, 0 0 20px #ff3b8e;
+  cursor: pointer;
+  z-index: 10000;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+}
 
 /* ====== Canvas trái tim ====== */
 canvas {
@@ -41,6 +56,7 @@ canvas {
   height: 100%;
   opacity: 0;
   transition: opacity 2s ease-in;
+  z-index: 1; /* thấp hơn thư */
 }
 
 /* ====== Vòng chữ xoay ====== */
@@ -49,66 +65,121 @@ canvas {
   top: 50%;
   left: 50%;
   transform-style: preserve-3d;
-  animation: spin 15s linear infinite;
-  color: white;
-  text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff4081, 0 0 30px #ff1744;
+  animation: spin 20s linear infinite;
+  color: #fff;
+  text-shadow: 0 0 10px #ffb3d9, 0 0 20px #ff66b2, 0 0 40px #ff3399;
   font-weight: bold;
-  letter-spacing: 4px;
+  letter-spacing: 5px;
+  font-size: 30px;
   opacity: 0;
   transition: opacity 2s ease-in;
+  z-index: 2;
 }
-
 @keyframes spin {
-  from { transform: rotateY(0deg) rotateX(15deg); }
-  to { transform: rotateY(360deg) rotateX(15deg); }
+  from { transform: rotateY(0deg) rotateX(20deg); }
+  to { transform: rotateY(360deg) rotateX(20deg); }
 }
-
 .text-ring span {
   position: absolute;
   left: 50%;
-  transform-origin: 0 200px;
+  transform-origin: 0 250px;
 }
 
-/* ====== Dòng chữ nhấn vào ====== */
-.click-text {
+/* ====== Lá thư bay ====== */
+.letter {
   position: absolute;
+  width: 80px;
+  height: 60px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255,192,203,0.6);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  animation: float 8s ease-in-out infinite;
+  z-index: 5;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+.letter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #ffc0cb, #fff);
+  border-radius: 5px;
+  transform: rotateX(180deg);
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* ====== Popup thư ====== */
+.letter-message {
+  position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 24px;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff4081;
-  cursor: pointer;
-  z-index: 10000;
-  animation: pulse 1.5s infinite;
+  transform: translate(-50%, -50%) scale(0.7);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px 35px;
+  border-radius: 15px;
+  box-shadow: 0 0 40px #ff99cc;
+  text-align: center;
+  font-size: 20px;
+  color: #ff4081;
+  z-index: 10001;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+.letter-message.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+/* ====== Nút đóng thư ====== */
+.close-btn {
+  margin-top: 15px;
+  padding: 6px 18px;
+  background: #ff4081;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 10px #ff66b2;
+  transition: 0.3s;
 }
+.close-btn:hover { background: #e60073; }
 </style>
 </head>
 <body>
 
-<!-- Rèm mở màn -->
-<div class="curtain" id="curtain">
+<!-- Rèm mở -->
+<div class="curtain" style="z-index: 100000;" id="curtain">
   <div class="panel left"></div>
   <div class="panel right"></div>
 </div>
 
-<!-- Dòng chữ click -->
-<div class="click-text" id="clickText">💗 Nhấn để mở trái tym 💗</div>
+<!-- Dòng chữ mở -->
+<div class="click-text"style="z-index: 100000;" id="clickText">💌 Nhấn để mở món quà 💖</div>
 
-<!-- Hiệu ứng trái tim -->
+<!-- Canvas trái tim -->
 <canvas id="pinkboard"></canvas>
 
 <!-- Vòng chữ xoay -->
 <div class="text-ring" id="textRing"></div>
 
+<!-- Lá thư bay quanh -->
+<div class="letter" style="top:20%; left:15%; z-index: 9999;" data-msg="💖 Gửi đến Uyển — Chúc em luôn xinh đẹp, rạng rỡ như đóa hoa hướng dương 🌻"></div>
+<div class="letter" style="top:60%; left:25%;z-index: 9999;" data-msg="🌸 Mong rằng mỗi ngày của em đều ngập tràn nụ cười và yêu thương 💕"></div>
+<div class="letter" style="top:40%; right:20%;z-index: 9999;" data-msg="💌 20-10 không chỉ là ngày tôn vinh phái đẹp, mà là dịp để nhắc rằng em thật tuyệt vời!"></div>
+<div class="letter" style="bottom:15%; left:50%;z-index: 9999;" data-msg="💗 Cảm ơn vì đã mang đến niềm vui, hãy luôn hạnh phúc nhé!"></div>
+
+<!-- Popup hiển thị nội dung thư -->
+<div class="letter-message" id="letterMsg">
+  <div id="letterText"></div>
+  <button class="close-btn" onclick="closeLetter()">Đóng 💝</button>
+</div>
+
 <!-- Nhạc nền -->
-<audio id="bgMusic" src="audio.mp3" loop></audio>
+<audio id="bgMusic" src="audio2.mp3" loop></audio>
 
 <script>
 const curtain = document.getElementById("curtain");
@@ -116,20 +187,20 @@ const clickText = document.getElementById("clickText");
 const canvas = document.getElementById("pinkboard");
 const textRing = document.getElementById("textRing");
 const audio = document.getElementById("bgMusic");
+const letters = document.querySelectorAll(".letter");
+const letterMsg = document.getElementById("letterMsg");
+const letterText = document.getElementById("letterText");
 
 clickText.addEventListener("click", () => {
-  // Ẩn dòng chữ và mở rèm
   clickText.style.display = "none";
   curtain.classList.add("open");
-
-  // Chờ rèm mở xong rồi hiển thị trái tim & chữ
   setTimeout(() => {
+    curtain.style.zIndex = "8888";
     canvas.style.opacity = 1;
     textRing.style.opacity = 1;
     startHeartEffect();
   }, 2000);
 
-  // Phát nhạc khi click
   audio.volume = 0;
   audio.play().then(() => {
     let vol = 0;
@@ -141,19 +212,33 @@ clickText.addEventListener("click", () => {
   });
 });
 
-/* ============================================
+/* Hiệu ứng click thư */
+letters.forEach(letter => {
+  letter.addEventListener("click", () => {
+    // Hiệu ứng xoay và biến mất
+    letter.style.transform = "scale(0) rotate(360deg)";
+    letter.style.opacity = "0";
+    setTimeout(() => letter.remove(), 600);
+
+    // Hiện nội dung thư
+    letterText.innerHTML = letter.dataset.msg;
+    letterMsg.classList.add("active");
+  });
+});
+function closeLetter() {
+  letterMsg.classList.remove("active");
+}
+
+/* ======================================
    ❤️ Hiệu ứng trái tim
-   ============================================ */
+====================================== */
 function startHeartEffect() {
-  var settings = {
-    particles: { length: 8000, duration: 4, velocity: 80, effect: -1.3, size: 8 },
-  };
+  var settings = { particles: { length: 7000, duration: 4, velocity: 90, effect: -1.3, size: 8 } };
   var Point=function(x,y){this.x=x||0;this.y=y||0;};
   Point.prototype.clone=function(){return new Point(this.x,this.y);};
   Point.prototype.length=function(len){if(typeof len==='undefined')return Math.sqrt(this.x*this.x+this.y*this.y);
     this.normalize();this.x*=len;this.y*=len;return this;};
   Point.prototype.normalize=function(){var len=this.length();this.x/=len;this.y/=len;return this;};
-
   var Particle=function(){this.position=new Point();this.velocity=new Point();this.acceleration=new Point();this.age=0;};
   Particle.prototype.initialize=function(x,y,dx,dy){
     this.position.x=x;this.position.y=y;this.velocity.x=dx;this.velocity.y=dy;
@@ -198,7 +283,7 @@ function startHeartEffect() {
         p.y=settings.particles.size/2-p.y*settings.particles.size/350;return p;}
       ctx.beginPath();var t=-Math.PI;var p=to(t);ctx.moveTo(p.x,p.y);
       while(t<Math.PI){t+=0.02;p=to(t);ctx.lineTo(p.x,p.y);}
-      ctx.closePath();ctx.fillStyle='#ff3366';ctx.shadowColor='#ff6699';ctx.shadowBlur=20;ctx.fill();
+      ctx.closePath();ctx.fillStyle='#ff3366';ctx.shadowColor='#ff99cc';ctx.shadowBlur=15;ctx.fill();
       var img=new Image();img.src=c.toDataURL();return img;})();
     function render(){
       requestAnimationFrame(render);
@@ -214,14 +299,14 @@ function startHeartEffect() {
   })(canvas);
 }
 
-/* ============================================
-   💫 Hiệu ứng chữ xoay quanh trái tim
-   ============================================ */
-const text = " Chúc Uyên 20-10 Vui Vẻ ";
+/* ======================================
+   🌸 Vòng chữ xoay
+====================================== */
+const text = "  Chúc Uyển 20-10 Vui Vẻ & Hạnh Phúc  ";
 for (let i = 0; i < text.length; i++) {
   const span = document.createElement("span");
   span.textContent = text[i];
-  span.style.transform = `rotate(${i * (360 / text.length)}deg) translateX(200px) rotate(${i * (360 / text.length) * -1}deg)`;
+  span.style.transform = `rotate(${i * (360 / text.length)}deg) translateX(250px) rotate(${-i * (360 / text.length)}deg)`;
   textRing.appendChild(span);
 }
 </script>
