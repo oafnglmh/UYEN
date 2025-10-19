@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Chúc Uyên 20-10 Vui Vẻ ❤️</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ====== Hiệu ứng mở màn ====== */
+.curtain {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.panel {
+  flex: 1;
+  background: linear-gradient(to right, #ff4081, #ff1744);
+  transition: transform 2s ease-in-out;
+}
+
+.panel.left { transform: translateX(0); }
+.panel.right { transform: translateX(0); }
+
+.curtain.open .left { transform: translateX(-100%); }
+.curtain.open .right { transform: translateX(100%); }
+
+/* ====== Canvas trái tim ====== */
+canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 2s ease-in;
+}
+
+/* ====== Vòng chữ xoay ====== */
+.text-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  animation: spin 15s linear infinite;
+  color: white;
+  text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff4081, 0 0 30px #ff1744;
+  font-weight: bold;
+  letter-spacing: 4px;
+  opacity: 0;
+  transition: opacity 2s ease-in;
+}
+
+@keyframes spin {
+  from { transform: rotateY(0deg) rotateX(15deg); }
+  to { transform: rotateY(360deg) rotateX(15deg); }
+}
+
+.text-ring span {
+  position: absolute;
+  left: 50%;
+  transform-origin: 0 200px;
+}
+
+/* ====== Dòng chữ nhấn vào ====== */
+.click-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff4081;
+  cursor: pointer;
+  z-index: 10000;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+}
+</style>
+</head>
+<body>
+
+<!-- Rèm mở màn -->
+<div class="curtain" id="curtain">
+  <div class="panel left"></div>
+  <div class="panel right"></div>
+</div>
+
+<!-- Dòng chữ click -->
+<div class="click-text" id="clickText">💗 Nhấn để mở trái tym 💗</div>
+
+<!-- Hiệu ứng trái tim -->
+<canvas id="pinkboard"></canvas>
+
+<!-- Vòng chữ xoay -->
+<div class="text-ring" id="textRing"></div>
+
+<!-- Nhạc nền -->
+<audio id="bgMusic" src="audio.mp3" loop></audio>
+
+<script>
+const curtain = document.getElementById("curtain");
+const clickText = document.getElementById("clickText");
+const canvas = document.getElementById("pinkboard");
+const textRing = document.getElementById("textRing");
+const audio = document.getElementById("bgMusic");
+
+clickText.addEventListener("click", () => {
+  // Ẩn dòng chữ và mở rèm
+  clickText.style.display = "none";
+  curtain.classList.add("open");
+
+  // Chờ rèm mở xong rồi hiển thị trái tim & chữ
+  setTimeout(() => {
+    canvas.style.opacity = 1;
+    textRing.style.opacity = 1;
+    startHeartEffect();
+  }, 2000);
+
+  // Phát nhạc khi click
+  audio.volume = 0;
+  audio.play().then(() => {
+    let vol = 0;
+    const fade = setInterval(() => {
+      vol += 0.02;
+      audio.volume = vol;
+      if (vol >= 0.5) clearInterval(fade);
+    }, 100);
+  });
+});
+
+/* ============================================
+   ❤️ Hiệu ứng trái tim
+   ============================================ */
+function startHeartEffect() {
+  var settings = {
+    particles: { length: 8000, duration: 4, velocity: 80, effect: -1.3, size: 8 },
+  };
+  var Point=function(x,y){this.x=x||0;this.y=y||0;};
+  Point.prototype.clone=function(){return new Point(this.x,this.y);};
+  Point.prototype.length=function(len){if(typeof len==='undefined')return Math.sqrt(this.x*this.x+this.y*this.y);
+    this.normalize();this.x*=len;this.y*=len;return this;};
+  Point.prototype.normalize=function(){var len=this.length();this.x/=len;this.y/=len;return this;};
+
+  var Particle=function(){this.position=new Point();this.velocity=new Point();this.acceleration=new Point();this.age=0;};
+  Particle.prototype.initialize=function(x,y,dx,dy){
+    this.position.x=x;this.position.y=y;this.velocity.x=dx;this.velocity.y=dy;
+    this.acceleration.x=dx*settings.particles.effect;this.acceleration.y=dy*settings.particles.effect;this.age=0;};
+  Particle.prototype.update=function(dt){this.position.x+=this.velocity.x*dt;
+    this.position.y+=this.velocity.y*dt;this.velocity.x+=this.acceleration.x*dt;
+    this.velocity.y+=this.acceleration.y*dt;this.age+=dt;};
+  Particle.prototype.draw=function(ctx,img){function ease(t){return (--t)*t*t+1;}
+    var size=img.width*ease(this.age/settings.particles.duration);
+    ctx.globalAlpha=1-this.age/settings.particles.duration;
+    ctx.drawImage(img,this.position.x-size/2,this.position.y-size/2,size,size);};
+
+  var ParticlePool=function(length){
+    var particles=new Array(length),firstActive=0,firstFree=0,duration=settings.particles.duration;
+    for(var i=0;i<length;i++)particles[i]=new Particle();
+    this.add=function(x,y,dx,dy){
+      particles[firstFree].initialize(x,y,dx,dy);
+      firstFree=(firstFree+1)%length;if(firstActive===firstFree)firstActive=(firstActive+1)%length;};
+    this.update=function(dt){var i;
+      if(firstActive<firstFree){for(i=firstActive;i<firstFree;i++)particles[i].update(dt);}
+      else{for(i=firstActive;i<length;i++)particles[i].update(dt);
+      for(i=0;i<firstFree;i++)particles[i].update(dt);}
+      while(particles[firstActive].age>=duration && firstActive!==firstFree){
+        firstActive=(firstActive+1)%length;}};this.draw=function(ctx,img){
+      if(firstActive<firstFree){for(var i=firstActive;i<firstFree;i++)particles[i].draw(ctx,img);}
+      else{for(var i=firstActive;i<length;i++)particles[i].draw(ctx,img);
+      for(var i=0;i<firstFree;i++)particles[i].draw(ctx,img);}};};
+
+  (function(canvas){
+    var ctx=canvas.getContext('2d'),
+    particles=new ParticlePool(settings.particles.length),
+    particleRate=settings.particles.length/settings.particles.duration,
+    time;
+    function pointOnHeart(t){return new Point(
+      160*Math.pow(Math.sin(t),3),
+      130*Math.cos(t)-50*Math.cos(2*t)-20*Math.cos(3*t)-10*Math.cos(4*t)+25);}
+    var image=(function(){
+      var c=document.createElement('canvas'),ctx=c.getContext('2d');
+      c.width=settings.particles.size;c.height=settings.particles.size;
+      function to(t){var p=pointOnHeart(t);
+        p.x=settings.particles.size/2+p.x*settings.particles.size/350;
+        p.y=settings.particles.size/2-p.y*settings.particles.size/350;return p;}
+      ctx.beginPath();var t=-Math.PI;var p=to(t);ctx.moveTo(p.x,p.y);
+      while(t<Math.PI){t+=0.02;p=to(t);ctx.lineTo(p.x,p.y);}
+      ctx.closePath();ctx.fillStyle='#ff3366';ctx.shadowColor='#ff6699';ctx.shadowBlur=20;ctx.fill();
+      var img=new Image();img.src=c.toDataURL();return img;})();
+    function render(){
+      requestAnimationFrame(render);
+      var newTime=new Date().getTime()/1000,deltaTime=newTime-(time||newTime);
+      time=newTime;ctx.clearRect(0,0,canvas.width,canvas.height);
+      var amount=particleRate*deltaTime;
+      for(var i=0;i<amount;i++){var pos=pointOnHeart(Math.PI-2*Math.PI*Math.random());
+        var dir=pos.clone().length(settings.particles.velocity);
+        particles.add(canvas.width/2+pos.x,canvas.height/2-pos.y,dir.x,-dir.y);}
+      particles.update(deltaTime);particles.draw(ctx,image);}
+    function onResize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+    window.onresize=onResize;setTimeout(function(){onResize();render();},10);
+  })(canvas);
+}
+
+/* ============================================
+   💫 Hiệu ứng chữ xoay quanh trái tim
+   ============================================ */
+const text = " Chúc Uyên 20-10 Vui Vẻ ";
+for (let i = 0; i < text.length; i++) {
+  const span = document.createElement("span");
+  span.textContent = text[i];
+  span.style.transform = `rotate(${i * (360 / text.length)}deg) translateX(200px) rotate(${i * (360 / text.length) * -1}deg)`;
+  textRing.appendChild(span);
+}
+</script>
+</body>
+</html>
